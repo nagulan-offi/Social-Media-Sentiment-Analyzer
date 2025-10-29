@@ -1,0 +1,5 @@
+{
+  "name": "Social Media Sentiment Analyzer",
+  "description": "An AI-powered dashboard to analyze recent public sentiment on any topic. It uses the Gemini API, grounded by Google Search, to find and analyze social media posts, presenting the results in a visual dashboard.",
+  "requestFramePermissions": []
+}
