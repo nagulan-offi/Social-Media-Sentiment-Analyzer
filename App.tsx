@@ -79,7 +79,7 @@ const App: React.FC = () => {
           AI-Powered Social Media Sentiment Analyzer
         </h1>
         <p className="mt-4 text-lg text-slate-400 max-w-3xl mx-auto">
-          Enter any topic, brand, or hashtag to analyze recent public sentiment using Google Gemini.
+          Enter any topic, brand, or hashtag to analyze recent public sentiment using Google Gemini. The analysis is based on a sample of up to 10 recent public posts.
         </p>
       </header>
       
