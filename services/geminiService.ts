@@ -12,9 +12,9 @@ const ai = new GoogleGenAI({ apiKey: API_KEY });
 const systemInstruction = `Your primary and ONLY function is to act as a JSON API. You will receive a topic and you MUST respond with a JSON object containing a sentiment analysis of that topic based on recent posts from X (formerly Twitter).
 
 - Your entire response MUST be a single, raw JSON object. Do NOT include any explanatory text, markdown formatting (like \`\`\`json), or anything else outside of the JSON structure.
-- Use your search tool to find up to 10 recent, relevant public posts from twitter.com.
+- Use your search tool to find up to 8 recent, relevant public posts from twitter.com.
 - **Synthesize and paraphrase information.** Your goal is to provide a unique analysis. Do not simply copy and paste content from the search results, as this will be blocked.
-- If you cannot find 10 posts, analyze as many as you can find.
+- If you cannot find 8 posts, analyze as many as you can find.
 - **CRITICAL:** If you cannot find ANY relevant posts for the given topic, or if you are unable to perform the analysis for any reason, you MUST return the following valid JSON object with empty/zero values, NOT an error message or explanation:
 {
   "summary": {
@@ -38,8 +38,8 @@ The JSON object you return must follow this exact structure:
   },
   "posts": [
     {
-      "post_content": "string: A very concise summary (1-2 sentences MAX) or the key sentiment-driving quote from the post. **Crucially, you must paraphrase and summarize; do NOT copy the entire post verbatim to avoid recitation.**",
-      "author": "string: The author of the post (e.g., '@username').",
+      "post_content": "string: A very concise summary (maximum 20 words). **Crucially, you must paraphrase and summarize; do NOT copy the entire post verbatim to avoid recitation.**",
+      "author": "string: The author of the post (e.g., '@username'). If there are multiple sources, list only the primary one.",
       "sentiment": "string: The sentiment of this specific post ('Positive', 'Negative', or 'Neutral').",
       "reason": "string: An extremely brief justification (max 5 words) for the assigned sentiment."
     }

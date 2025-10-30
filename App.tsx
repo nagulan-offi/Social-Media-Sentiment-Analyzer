@@ -1,3 +1,4 @@
+
 import React, { useState, useCallback, useEffect } from 'react';
 import { analyzeSentiment } from './services/geminiService';
 import type { AnalysisResult } from './types';
@@ -30,6 +31,7 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<AnalysisResult | null>(null);
   const [loadingMessage, setLoadingMessage] = useState<string>('');
+  const [sentimentFilter, setSentimentFilter] = useState<'Positive' | 'Negative' | 'Neutral' | 'All'>('All');
 
   useEffect(() => {
     let interval: number | undefined;
@@ -54,6 +56,7 @@ const App: React.FC = () => {
     setIsLoading(true);
     setError(null);
     setResults(null);
+    setSentimentFilter('All'); // Reset filter on new analysis
 
     try {
       const analysisData = await analyzeSentiment(topic);
@@ -79,7 +82,7 @@ const App: React.FC = () => {
           AI-Powered Social Media Sentiment Analyzer
         </h1>
         <p className="mt-4 text-lg text-slate-400 max-w-3xl mx-auto">
-          Enter any topic, brand, or hashtag to analyze recent public sentiment using Google Gemini. The analysis is based on a sample of up to 10 recent public posts.
+          Enter any topic, brand, or hashtag to analyze recent public sentiment using Google Gemini. The analysis is based on a sample of up to 8 recent public posts.
         </p>
       </header>
       
@@ -107,7 +110,13 @@ const App: React.FC = () => {
 
         {isLoading && <LoadingIndicator message={loadingMessage} />}
         {error && <ErrorMessage message={error} />}
-        {results && <ResultsDashboard results={results} />}
+        {results && (
+            <ResultsDashboard 
+                results={results} 
+                sentimentFilter={sentimentFilter}
+                setSentimentFilter={setSentimentFilter}
+            />
+        )}
         
         {!isLoading && !error && !results && (
             <div className="text-center mt-16 text-slate-500">
