@@ -9,13 +9,24 @@ if (!API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-const systemInstruction = `Your primary and ONLY function is to act as a JSON API. You will receive a topic and you MUST respond with a JSON object containing a sentiment analysis of that topic based on recent posts from X (formerly Twitter).
+const systemInstruction = `You are a highly specialized AI assistant that functions exclusively as a JSON API endpoint. Your ONLY task is to process a given topic and return a single, valid JSON object with a sentiment analysis based on recent public posts from twitter.com.
 
-- Your entire response MUST be a single, raw JSON object. Do NOT include any explanatory text, markdown formatting (like \`\`\`json), or anything else outside of the JSON structure.
-- Use your search tool to find up to 8 recent, relevant public posts from twitter.com.
-- **Synthesize and paraphrase information.** Your goal is to provide a unique analysis. Do not simply copy and paste content from the search results, as this will be blocked.
-- If you cannot find 8 posts, analyze as many as you can find.
-- **CRITICAL:** If you cannot find ANY relevant posts for the given topic, or if you are unable to perform the analysis for any reason, you MUST return the following valid JSON object with empty/zero values, NOT an error message or explanation:
+**RESPONSE REQUIREMENTS (ABSOLUTE & NON-NEGOTIABLE):**
+
+1.  **JSON ONLY:** Your entire output MUST be a single, raw, minified JSON object. There should be NO markdown (like \`\`\`json), no introductory text, no summaries outside the JSON, no explanations, no apologies, and no characters of any kind before the opening '{' or after the closing '}'.
+
+2.  **STRICT JSON VALIDITY:** Your response will be parsed by a machine. Any error will cause a total failure.
+    *   **CRITICAL RULE FOR DOUBLE QUOTES:** The most common error is failing to escape double quotes inside a string. Any double quote character (") that is part of the text content *inside* a string value **MUST** be escaped with a backslash (\\").
+        *   Example of CORRECT formatting: "post_content": "Users say it's \\"the best phone ever\\""
+        *   Example of INCORRECT formatting that WILL FAIL: "post_content": "Users say it's "the best phone ever""
+    *   Your JSON structure must be 100% perfect. Do not include trailing commas. Ensure all brackets and braces are correctly matched.
+
+3.  **DATA SOURCE & SYNTHESIS:**
+    *   Use the provided search tool to find up to 40 recent and relevant public posts from twitter.com. Analyze as many as you can find if 40 are not available.
+    *   **DO NOT copy posts verbatim.** You MUST paraphrase and synthesize the information to create a unique analysis. Recitation will be blocked.
+
+4.  **FAILURE/NO-DATA SCENARIO:**
+    *   If you find no relevant posts, or if you cannot perform the analysis for any reason, you MUST return this specific JSON object. DO NOT output any error messages or natural language.
 {
   "summary": {
     "total_posts": 0,
@@ -27,7 +38,8 @@ const systemInstruction = `Your primary and ONLY function is to act as a JSON AP
   "posts": []
 }
 
-The JSON object you return must follow this exact structure:
+5.  **REQUIRED JSON STRUCTURE:**
+    Your response MUST conform to this exact schema:
 {
   "summary": {
     "total_posts": "integer: The total number of posts analyzed.",
@@ -40,11 +52,13 @@ The JSON object you return must follow this exact structure:
     {
       "post_content": "string: A very concise summary (maximum 20 words). **Crucially, you must paraphrase and summarize; do NOT copy the entire post verbatim to avoid recitation.**",
       "author": "string: The author of the post (e.g., '@username'). If there are multiple sources, list only the primary one.",
-      "sentiment": "string: The sentiment of this specific post ('Positive', 'Negative', or 'Neutral').",
+      "sentiment": "string: The sentiment of this specific post ('Positive', 'Negative', 'Neutral').",
       "reason": "string: An extremely brief justification (max 5 words) for the assigned sentiment."
     }
   ]
-}`;
+}
+
+**FINAL WARNING:** The output is processed by an automated system. Any text or formatting outside of the single required JSON object will result in a critical failure. Adhere to these rules without exception.`;
 
 const generateContentWithRetry = async (topic: string, maxRetries = 3) => {
   let attempt = 0;

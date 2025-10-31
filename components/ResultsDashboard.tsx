@@ -7,26 +7,26 @@ import SentimentChart from './SentimentChart';
 const getSentimentClasses = (sentiment: Post['sentiment']) => {
   switch (sentiment) {
     case 'Positive':
-      return 'bg-green-500/20 text-green-400 border-green-500/30';
+      return 'bg-[#CBD99B]/10 text-[#CBD99B] border-[#CBD99B]/20';
     case 'Negative':
-      return 'bg-red-500/20 text-red-400 border-red-500/30';
+      return 'bg-[#E53935]/10 text-[#E53935] border-[#E53935]/20';
     case 'Neutral':
-      return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+      return 'bg-[#A0AEC0]/10 text-[#A0AEC0] border-[#A0AEC0]/20';
     default:
       return 'bg-gray-700 text-gray-300 border-gray-600';
   }
 };
 
 const PostCard: React.FC<{ post: Post }> = ({ post }) => (
-  <div className="bg-brand-primary/50 border border-slate-700/50 rounded-lg p-4 space-y-3 transition-all hover:bg-brand-primary/80 hover:border-slate-600">
+  <div className="bg-brand-primary/60 border border-blue-800/50 rounded-lg p-4 space-y-3 transition-all hover:bg-brand-primary/90 hover:border-blue-700">
     <div className="flex justify-between items-start">
-      <p className="text-slate-400 text-sm font-medium">{post.author}</p>
+      <p className="text-gray-400 text-sm font-medium">{post.author}</p>
       <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${getSentimentClasses(post.sentiment)}`}>
         {post.sentiment}
       </span>
     </div>
-    <p className="text-slate-300">{post.post_content}</p>
-    <p className="text-xs text-slate-500 italic border-l-2 border-slate-600 pl-2">
+    <p className="text-gray-300">{post.post_content}</p>
+    <p className="text-xs text-gray-500 italic border-l-2 border-blue-800 pl-2">
       <strong>Reason:</strong> {post.reason}
     </p>
   </div>
@@ -36,9 +36,9 @@ const SentimentStat: React.FC<{ label: string; value: string | number; className
   <button 
     onClick={onClick} 
     disabled={!onClick}
-    className={`w-full flex justify-between items-baseline p-3 bg-slate-800/50 rounded-md transition-colors duration-200 ${onClick ? 'cursor-pointer hover:bg-slate-700/80' : 'cursor-default'} ${isActive ? 'ring-2 ring-brand-accent' : ''}`}
+    className={`w-full flex justify-between items-baseline p-3 bg-white/5 rounded-md transition-colors duration-200 ${onClick ? 'cursor-pointer hover:bg-white/10' : 'cursor-default'} ${isActive ? 'ring-2 ring-brand-accent' : ''}`}
   >
-    <span className="text-slate-400 text-sm">{label}</span>
+    <span className="text-gray-400 text-sm">{label}</span>
     <span className={`font-bold text-lg ${className}`}>{value}</span>
   </button>
 );
@@ -57,35 +57,35 @@ const SentimentSummaryCard: React.FC<{
     } = summary || {};
 
     const getSentimentColor = (sentiment: string) => {
-        if (sentiment.toLowerCase() === 'positive') return 'text-green-400';
-        if (sentiment.toLowerCase() === 'negative') return 'text-red-400';
-        return 'text-gray-400';
+        if (sentiment.toLowerCase() === 'positive') return 'text-brand-positive';
+        if (sentiment.toLowerCase() === 'negative') return 'text-brand-negative';
+        return 'text-brand-neutral';
     }
     
     return (
     <div className="bg-brand-primary p-6 rounded-xl shadow-lg h-full flex flex-col">
-      <h2 className="text-2xl font-bold text-slate-100 mb-6">Sentiment Breakdown</h2>
+      <h2 className="text-2xl font-bold text-white mb-6">Sentiment Breakdown</h2>
       <div className="space-y-3 mb-6">
-        <SentimentStat label="Total Posts Analyzed" value={total_posts} className="text-slate-200"/>
+        <SentimentStat label="Total Posts Analyzed" value={total_posts} className="text-gray-200"/>
         <SentimentStat label="Overall Sentiment" value={overall_sentiment} className={getSentimentColor(overall_sentiment)}/>
         <SentimentStat 
             label="Positive Posts" 
             value={`${positive_percent.toFixed(0)}%`} 
-            className="text-green-400"
+            className="text-brand-positive"
             onClick={() => onFilterChange('Positive')}
             isActive={activeFilter === 'Positive'}
         />
         <SentimentStat 
             label="Negative Posts" 
             value={`${negative_percent.toFixed(0)}%`} 
-            className="text-red-400"
+            className="text-brand-negative"
             onClick={() => onFilterChange('Negative')}
             isActive={activeFilter === 'Negative'}
         />
         <SentimentStat 
             label="Neutral Posts" 
             value={`${neutral_percent.toFixed(0)}%`} 
-            className="text-gray-400"
+            className="text-brand-neutral"
             onClick={() => onFilterChange('Neutral')}
             isActive={activeFilter === 'Neutral'}
         />
@@ -103,9 +103,9 @@ const SentimentSummaryCard: React.FC<{
 }
 
 const WordCloudCard: React.FC<{ posts: Post[] }> = ({ posts }) => {
-    // FIX: Explicitly type the return value of useMemo to prevent a complex type inference
-    // issue that can lead to a "Property 'length' does not exist on type 'never'" error.
-    const wordCloud = React.useMemo<{ word: string; size: number }[]>(() => {
+    // Fix: TypeScript can infer the return type of useMemo as `never[]` if it only returns an empty array, which can lead to type issues.
+    // By explicitly typing the `wordCloud` variable, we ensure it is always correctly typed as `{ word: string; size: number }[]`.
+    const wordCloud: { word: string; size: number }[] = React.useMemo(() => {
         const stopWords = new Set(['a', 'an', 'the', 'is', 'in', 'it', 'of', 'and', 'for', 'to', 'on', 'with', 'was', 'i', 'that', 'this', 'be', 'are', 'has', 'have', 'at', 'by', 'as']);
         const wordCounts: { [key: string]: number } = {};
 
@@ -139,12 +139,12 @@ const WordCloudCard: React.FC<{ posts: Post[] }> = ({ posts }) => {
 
     return (
         <div className="bg-brand-primary p-6 rounded-xl shadow-lg">
-            <h2 className="text-2xl font-bold text-slate-100 mb-6">Key Terms</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">Key Terms</h2>
             <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center items-center">
                 {wordCloud.map(({ word, size }) => (
                     <span 
                         key={word}
-                        className="text-slate-400 transition-colors hover:text-brand-accent"
+                        className="text-gray-400 transition-colors hover:text-brand-accent"
                         style={{ fontSize: `${size}rem`, lineHeight: `${size * 1.1}rem` }}
                     >
                         {word}
@@ -158,7 +158,7 @@ const WordCloudCard: React.FC<{ posts: Post[] }> = ({ posts }) => {
 
 const PostsFeed: React.FC<{ posts: Post[], filter: string }> = ({ posts, filter }) => (
   <div className="bg-brand-primary p-6 rounded-xl shadow-lg h-full">
-    <h2 className="text-2xl font-bold text-slate-100 mb-6">
+    <h2 className="text-2xl font-bold text-white mb-6">
       {filter === 'All' ? 'Recent Posts' : `Recent ${filter} Posts`}
     </h2>
     {posts.length > 0 ? (
@@ -169,7 +169,7 @@ const PostsFeed: React.FC<{ posts: Post[], filter: string }> = ({ posts, filter 
         </div>
     ) : (
         <div className="flex items-center justify-center h-48">
-            <p className="text-slate-500">No {filter !== 'All' ? filter : ''} posts found.</p>
+            <p className="text-gray-500">No {filter !== 'All' ? filter : ''} posts found.</p>
         </div>
     )}
   </div>

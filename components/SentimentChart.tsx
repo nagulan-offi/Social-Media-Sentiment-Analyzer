@@ -8,9 +8,9 @@ interface SentimentChartProps {
 }
 
 const COLORS = {
-  Positive: '#22c55e', // green-500
-  Negative: '#ef4444', // red-500
-  Neutral: '#6b7280',  // gray-500
+  Positive: '#CBD99B',
+  Negative: '#E53935',
+  Neutral: '#A0AEC0',
 };
 
 type SentimentKey = keyof typeof COLORS;
@@ -43,9 +43,10 @@ const SentimentChart: React.FC<SentimentChartProps> = ({ data }) => {
           </Pie>
           <Tooltip
             contentStyle={{
-              backgroundColor: '#1f2937',
-              borderColor: '#374151',
+              backgroundColor: '#102C57', // brand-primary
+              borderColor: '#0A1931', // brand-secondary
               borderRadius: '0.5rem',
+              color: '#F8F9FA'
             }}
             formatter={(value) => `${value}%`}
           />
