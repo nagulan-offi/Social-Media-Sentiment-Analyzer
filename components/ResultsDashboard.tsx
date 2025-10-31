@@ -103,9 +103,9 @@ const SentimentSummaryCard: React.FC<{
 }
 
 const WordCloudCard: React.FC<{ posts: Post[] }> = ({ posts }) => {
-    // Fix: TypeScript can infer the return type of useMemo as `never[]` if it only returns an empty array, which can lead to type issues.
-    // By explicitly typing the `wordCloud` variable, we ensure it is always correctly typed as `{ word: string; size: number }[]`.
-    const wordCloud: { word: string; size: number }[] = React.useMemo(() => {
+    // Fix: Explicitly type the `useMemo` hook with a generic to prevent TypeScript from inferring
+    // `never[]` when the callback returns an empty array, which can cause type errors.
+    const wordCloud = React.useMemo<{ word: string; size: number }[]>(() => {
         const stopWords = new Set(['a', 'an', 'the', 'is', 'in', 'it', 'of', 'and', 'for', 'to', 'on', 'with', 'was', 'i', 'that', 'this', 'be', 'are', 'has', 'have', 'at', 'by', 'as']);
         const wordCounts: { [key: string]: number } = {};
 
@@ -120,7 +120,7 @@ const WordCloudCard: React.FC<{ posts: Post[] }> = ({ posts }) => {
 
         const sortedWords = Object.entries(wordCounts)
             .sort(([, a], [, b]) => b - a)
-            .slice(0, 20); // Get top 20 words
+            .slice(0, 30); // Get top 30 words
 
         if (sortedWords.length === 0) return [];
 

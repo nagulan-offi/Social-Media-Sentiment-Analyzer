@@ -9,56 +9,50 @@ if (!API_KEY) {
 
 const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-const systemInstruction = `You are a highly specialized AI assistant that functions exclusively as a JSON API endpoint. Your ONLY task is to process a given topic and return a single, valid JSON object with a sentiment analysis based on recent public posts from twitter.com.
+const systemInstruction = `You are a machine that generates JSON. Your sole function is to return a single, valid JSON object based on a topic. Do not add any text or formatting outside the JSON object.
 
-**RESPONSE REQUIREMENTS (ABSOLUTE & NON-NEGOTIABLE):**
+**CRITICAL PARSING DIRECTIVE: ESCAPE ALL INTERNAL DOUBLE QUOTES.**
+This is the most important rule. All JSON string values must be valid. If a string's content contains a double quote character ("), it **MUST** be escaped with a backslash (\\"). Failure to do so will break the entire system. This is a non-negotiable, machine-enforced rule.
 
-1.  **JSON ONLY:** Your entire output MUST be a single, raw, minified JSON object. There should be NO markdown (like \`\`\`json), no introductory text, no summaries outside the JSON, no explanations, no apologies, and no characters of any kind before the opening '{' or after the closing '}'.
+*   **CORRECT:** {"post_content": "Users say it's \\"extremely bad\\"."}
+*   **INCORRECT (WILL CAUSE FAILURE):** {"post_content": "Users say it's "extremely bad"."}
 
-2.  **STRICT JSON VALIDITY:** Your response will be parsed by a machine. Any error will cause a total failure.
-    *   **CRITICAL RULE FOR DOUBLE QUOTES:** The most common error is failing to escape double quotes inside a string. Any double quote character (") that is part of the text content *inside* a string value **MUST** be escaped with a backslash (\\").
-        *   Example of CORRECT formatting: "post_content": "Users say it's \\"the best phone ever\\""
-        *   Example of INCORRECT formatting that WILL FAIL: "post_content": "Users say it's "the best phone ever""
-    *   Your JSON structure must be 100% perfect. Do not include trailing commas. Ensure all brackets and braces are correctly matched.
+**RESPONSE REQUIREMENTS:**
 
-3.  **DATA SOURCE & SYNTHESIS:**
-    *   Use the provided search tool to find up to 40 recent and relevant public posts from twitter.com. Analyze as many as you can find if 40 are not available.
-    *   **DO NOT copy posts verbatim.** You MUST paraphrase and synthesize the information to create a unique analysis. Recitation will be blocked.
+1.  **JSON ONLY:** Your entire output must be one single, raw, minified JSON object. No markdown, no introductory text, no explanations, nothing before the opening '{' or after the closing '}'.
 
-4.  **FAILURE/NO-DATA SCENARIO:**
-    *   If you find no relevant posts, or if you cannot perform the analysis for any reason, you MUST return this specific JSON object. DO NOT output any error messages or natural language.
+2.  **DATA SOURCE & SYNTHESIS:**
+    *   Use the provided search tool to find and analyze **as close to 40 recent public posts as possible** from twitter.com. Your primary goal is to maximize the number of analyzed posts up to this limit.
+    *   **DO NOT copy posts verbatim.** You MUST paraphrase and synthesize the information. Recitation will be blocked.
+
+3.  **FAILURE/NO-DATA SCENARIO:**
+    *   If no relevant posts are found, you MUST return this exact JSON object:
 {
-  "summary": {
-    "total_posts": 0,
-    "overall_sentiment": "Neutral",
-    "positive_percent": 0,
-    "negative_percent": 0,
-    "neutral_percent": 0
-  },
+  "summary": {"total_posts": 0, "overall_sentiment": "Neutral", "positive_percent": 0, "negative_percent": 0, "neutral_percent": 0},
   "posts": []
 }
 
-5.  **REQUIRED JSON STRUCTURE:**
+4.  **REQUIRED JSON STRUCTURE:**
     Your response MUST conform to this exact schema:
 {
   "summary": {
-    "total_posts": "integer: The total number of posts analyzed.",
-    "overall_sentiment": "string: The overall sentiment ('Positive', 'Negative', or 'Neutral').",
-    "positive_percent": "number: The percentage of positive posts (0-100).",
-    "negative_percent": "number: The percentage of negative posts (0-100).",
-    "neutral_percent": "number: The percentage of neutral posts (0-100)."
+    "total_posts": "integer: Total number of posts analyzed.",
+    "overall_sentiment": "string: 'Positive', 'Negative', or 'Neutral'.",
+    "positive_percent": "number: Percentage of positive posts (0-100).",
+    "negative_percent": "number: Percentage of negative posts (0-100).",
+    "neutral_percent": "number: Percentage of neutral posts (0-100)."
   },
   "posts": [
     {
-      "post_content": "string: A very concise summary (maximum 20 words). **Crucially, you must paraphrase and summarize; do NOT copy the entire post verbatim to avoid recitation.**",
-      "author": "string: The author of the post (e.g., '@username'). If there are multiple sources, list only the primary one.",
-      "sentiment": "string: The sentiment of this specific post ('Positive', 'Negative', 'Neutral').",
-      "reason": "string: An extremely brief justification (max 5 words) for the assigned sentiment."
+      "post_content": "string: Concise summary (max 20 words). Paraphrase, do not copy verbatim.",
+      "author": "string: The post author (e.g., '@username').",
+      "sentiment": "string: 'Positive', 'Negative', or 'Neutral'.",
+      "reason": "string: Extremely brief justification (max 5 words)."
     }
   ]
 }
 
-**FINAL WARNING:** The output is processed by an automated system. Any text or formatting outside of the single required JSON object will result in a critical failure. Adhere to these rules without exception.`;
+**FINAL CHECK:** Before outputting, verify that your response is a single JSON object and that all internal double quotes are correctly escaped. System failure will occur otherwise.`;
 
 const generateContentWithRetry = async (topic: string, maxRetries = 3) => {
   let attempt = 0;
@@ -66,12 +60,11 @@ const generateContentWithRetry = async (topic: string, maxRetries = 3) => {
   while (attempt < maxRetries) {
     try {
       const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-2.5-pro',
         contents: [{ parts: [{ text: `Analyze sentiment for: ${topic}` }] }],
         config: {
           systemInstruction,
           tools: [{ googleSearch: {} }],
-          thinkingConfig: { thinkingBudget: 0 }, // Prioritize speed
         },
       });
       return response;
