@@ -19,9 +19,9 @@ interface ErrorDisplayProps {
 }
 
 const ErrorDisplay: React.FC<ErrorDisplayProps> = ({ title, message, showRetry = false, onRetry }) => (
-  <div className="w-full max-w-3xl mx-auto mt-8 p-6 bg-brand-negative/20 border border-brand-negative/40 text-red-200 rounded-lg text-center shadow-lg">
+  <div className="w-full max-w-3xl mx-auto mt-8 p-6 bg-brand-negative/20 border border-brand-negative/40 text-red-300 rounded-lg text-center shadow-lg">
     <h3 className="text-xl font-bold text-red-200 mb-2">{title}</h3>
-    <p className="text-red-200/90">{message}</p>
+    <p className="text-red-300/90">{message}</p>
     {showRetry && onRetry && (
       <button
         onClick={onRetry}
@@ -155,7 +155,7 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-brand-secondary text-gray-200 font-sans flex flex-col items-center p-4">
       <header className="w-full text-center py-8 md:py-12">
-        <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-amber-500">
+        <h1 className="text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-teal-500">
           AI-Powered Social Media Sentiment Analyzer
         </h1>
         <p className="mt-4 text-lg text-gray-400 max-w-3xl mx-auto">
@@ -173,12 +173,12 @@ const App: React.FC = () => {
               onKeyPress={handleKeyPress}
               placeholder="e.g., 'new electric cars' or '#TechConference2024'"
               disabled={isLoading}
-              className="w-full p-4 pl-6 pr-32 text-lg text-white bg-brand-primary border-2 border-blue-900/50 rounded-full focus:ring-2 focus:ring-brand-accent focus:outline-none transition-all duration-300 disabled:opacity-50"
+              className="w-full p-4 pl-6 pr-32 text-lg text-white bg-brand-primary border-2 border-gray-700/50 rounded-full focus:ring-2 focus:ring-brand-accent focus:outline-none transition-all duration-300 disabled:opacity-50"
             />
             <button
               onClick={handleAnalyze}
               disabled={isLoading || !topic.trim()}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 px-8 py-2.5 text-base font-semibold text-white bg-gradient-to-r from-brand-accent to-orange-600 rounded-full hover:from-brand-accent-hover hover:to-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-brand-primary focus:ring-brand-accent-hover transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 px-8 py-2.5 text-base font-semibold text-white bg-gradient-to-r from-brand-accent to-cyan-600 rounded-full hover:from-brand-accent-hover hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-brand-primary focus:ring-brand-accent-hover transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? 'Analyzing...' : 'Analyze'}
             </button>

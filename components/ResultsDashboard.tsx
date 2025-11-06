@@ -7,18 +7,18 @@ import SentimentChart from './SentimentChart';
 const getSentimentClasses = (sentiment: Post['sentiment']) => {
   switch (sentiment) {
     case 'Positive':
-      return 'bg-[#CBD99B]/10 text-[#CBD99B] border-[#CBD99B]/20';
+      return 'bg-[#10B981]/10 text-[#10B981] border-[#10B981]/20';
     case 'Negative':
-      return 'bg-[#E53935]/10 text-[#E53935] border-[#E53935]/20';
+      return 'bg-[#EF4444]/10 text-[#EF4444] border-[#EF4444]/20';
     case 'Neutral':
-      return 'bg-[#A0AEC0]/10 text-[#A0AEC0] border-[#A0AEC0]/20';
+      return 'bg-[#6B7280]/10 text-[#6B7280] border-[#6B7280]/20';
     default:
       return 'bg-gray-700 text-gray-300 border-gray-600';
   }
 };
 
 const PostCard: React.FC<{ post: Post }> = ({ post }) => (
-  <div className="bg-brand-primary/60 border border-blue-800/50 rounded-lg p-4 space-y-3 transition-all hover:bg-brand-primary/90 hover:border-blue-700">
+  <div className="bg-brand-primary/60 border border-gray-700/50 rounded-lg p-4 space-y-3 transition-all hover:bg-brand-primary/90 hover:border-gray-600">
     <div className="flex justify-between items-start">
       <p className="text-gray-400 text-sm font-medium">{post.author}</p>
       <span className={`text-xs font-semibold px-2.5 py-0.5 rounded-full border ${getSentimentClasses(post.sentiment)}`}>
@@ -26,7 +26,7 @@ const PostCard: React.FC<{ post: Post }> = ({ post }) => (
       </span>
     </div>
     <p className="text-gray-300">{post.post_content}</p>
-    <p className="text-xs text-gray-500 italic border-l-2 border-blue-800 pl-2">
+    <p className="text-xs text-gray-500 italic border-l-2 border-gray-700 pl-2">
       <strong>Reason:</strong> {post.reason}
     </p>
   </div>
