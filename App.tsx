@@ -214,7 +214,7 @@ const App: React.FC = () => {
         )}
       </main>
       <footer className="w-full text-center py-6 mt-auto">
-        <p className="text-sm text-gray-500">Powered by Google's Gemini API</p>
+        <p className="text-sm text-gray-500">Powered by NAGULAN & AASISH KUMAR</p>
       </footer>
     </div>
   );

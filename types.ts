@@ -5,6 +5,7 @@ export interface SentimentSummary {
   positive_percent: number;
   negative_percent: number;
   neutral_percent: number;
+  overall_analysis: string;
 }
 
 export interface Post {

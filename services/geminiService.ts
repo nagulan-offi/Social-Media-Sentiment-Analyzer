@@ -28,7 +28,7 @@ This is the most important rule. All JSON string values must be valid. If a stri
 3.  **FAILURE/NO-DATA SCENARIO:**
     *   If no relevant posts are found, you MUST return this exact JSON object:
 {
-  "summary": {"total_posts": 0, "overall_sentiment": "Neutral", "positive_percent": 0, "negative_percent": 0, "neutral_percent": 0},
+  "summary": {"total_posts": 0, "overall_sentiment": "Neutral", "positive_percent": 0, "negative_percent": 0, "neutral_percent": 0, "overall_analysis": "No relevant posts were found for this topic."},
   "posts": []
 }
 
@@ -40,7 +40,8 @@ This is the most important rule. All JSON string values must be valid. If a stri
     "overall_sentiment": "string: 'Positive', 'Negative', or 'Neutral'.",
     "positive_percent": "number: Percentage of positive posts (0-100).",
     "negative_percent": "number: Percentage of negative posts (0-100).",
-    "neutral_percent": "number: Percentage of neutral posts (0-100)."
+    "neutral_percent": "number: Percentage of neutral posts (0-100).",
+    "overall_analysis": "string: A 2-3 line, concise narrative summary of the key findings and dominant sentiment. Do not just list percentages."
   },
   "posts": [
     {

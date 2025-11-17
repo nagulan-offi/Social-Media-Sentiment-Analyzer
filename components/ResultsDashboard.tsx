@@ -53,7 +53,8 @@ const SentimentSummaryCard: React.FC<{
         overall_sentiment = 'Neutral', 
         positive_percent = 0, 
         negative_percent = 0, 
-        neutral_percent = 0 
+        neutral_percent = 0,
+        overall_analysis = '',
     } = summary || {};
 
     const getSentimentColor = (sentiment: string) => {
@@ -64,7 +65,12 @@ const SentimentSummaryCard: React.FC<{
     
     return (
     <div className="bg-brand-primary p-6 rounded-xl shadow-lg h-full flex flex-col">
-      <h2 className="text-2xl font-bold text-white mb-6">Sentiment Breakdown</h2>
+      <h2 className="text-2xl font-bold text-white mb-4">Sentiment Breakdown</h2>
+      {overall_analysis && (
+        <p className="text-gray-400 text-sm mb-6 italic border-l-2 border-gray-600 pl-3">
+            {overall_analysis}
+        </p>
+      )}
       <div className="space-y-3 mb-6">
         <SentimentStat label="Total Posts Analyzed" value={total_posts} className="text-gray-200"/>
         <SentimentStat label="Overall Sentiment" value={overall_sentiment} className={getSentimentColor(overall_sentiment)}/>
@@ -96,7 +102,7 @@ const SentimentSummaryCard: React.FC<{
         )}
       </div>
       <div className="flex-grow flex items-center justify-center">
-        <SentimentChart data={{ total_posts, overall_sentiment, positive_percent, negative_percent, neutral_percent }} />
+        <SentimentChart data={{ ...summary, overall_analysis }} />
       </div>
     </div>
     );
